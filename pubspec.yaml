@@ -1,0 +1,51 @@
+name: pokedex_app
+description: Pokédex interactiva con Flutter
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Navegación
+  go_router: ^14.0.0
+
+  # HTTP / API
+  dio: ^5.4.0
+
+  # Estado global
+  flutter_riverpod: ^2.5.0
+  riverpod_annotation: ^2.3.0
+
+  # Base de datos
+  drift: ^2.18.0
+  sqlite3_flutter_libs: ^0.5.0
+  path_provider: ^2.1.0
+  path: ^1.9.0
+
+  # Preferencias
+  shared_preferences: ^2.2.0
+
+  # Imágenes de red con caché
+  cached_network_image: ^3.3.0
+
+  # Iconos Material
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  drift_dev: ^2.18.0
+  build_runner: ^2.4.0
+  riverpod_generator: ^2.3.0
+  flutter_lints: ^3.0.0
+  integration_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
