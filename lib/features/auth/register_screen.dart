@@ -3,14 +3,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/database/database_helper.dart';
 import 'login_styles.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _login() async {
+  Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -37,26 +37,31 @@ class _LoginScreenState extends State<LoginScreen> {
     final username = _usernameController.text.trim();
     final password = _passwordController.text.trim();
 
-    // Validar contra SQLite
-    final user = await DatabaseHelper().validateLogin(
+    // Verificar si el username ya existe
+    final exists = await DatabaseHelper().usernameExists(username);
+
+    if (exists) {
+      setState(() {
+        _errorMessage = 'Ese usuario ya está en uso';
+        _isLoading = false;
+      });
+      return;
+    }
+
+    // Crear el usuario en SQLite
+    final userId = await DatabaseHelper().createUser(
       username: username,
       password: password,
     );
 
-    if (user != null) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('is_logged_in', true);
-      await prefs.setInt('user_id', user.id);
-      await prefs.setString('username', user.username);
+    // Guardar sesión en SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('is_logged_in', true);
+    await prefs.setInt('user_id', userId);
+    await prefs.setString('username', username);
 
-      if (!mounted) return;
-      Navigator.pushReplacementNamed(context, '/home');
-    } else {
-      setState(() {
-        _errorMessage = 'Usuario o contraseña incorrectos';
-        _isLoading = false;
-      });
-    }
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override
@@ -99,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Iniciar sesión',
+                          'Crear cuenta',
                           style: LoginStyles.formTitleStyle,
                         ),
 
@@ -115,7 +120,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Ingresá tu usuario';
+                              return 'Ingresá un usuario';
+                            }
+                            if (value.trim().length < 3) {
+                              return 'Mínimo 3 caracteres';
                             }
                             return null;
                           },
@@ -147,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Ingresá tu contraseña';
+                              return 'Ingresá una contraseña';
                             }
                             if (value.length < 4) {
                               return 'Mínimo 4 caracteres';
@@ -173,10 +181,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         const SizedBox(height: LoginStyles.spacingLarge),
 
-                        // Botón de login
+                        // Botón de registro
                         ElevatedButton(
                           style: LoginStyles.primaryButtonStyle,
-                          onPressed: _isLoading ? null : _login,
+                          onPressed: _isLoading ? null : _register,
                           child: _isLoading
                               ? const SizedBox(
                                   height: 20,
@@ -187,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 )
                               : const Text(
-                                  'Ingresar',
+                                  'Crear cuenta',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -197,21 +205,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         const SizedBox(height: LoginStyles.spacingLarge),
 
-                        // Link a registro
+                        // Link a login
                         Center(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Text(
-                                '¿No tenés cuenta? ',
+                                '¿Ya tenés cuenta? ',
                                 style: LoginStyles.linkStyle,
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.pushNamed(context, '/register');
+                                  Navigator.pop(context);
                                 },
                                 child: const Text(
-                                  'Registrate',
+                                  'Iniciá sesión',
                                   style: LoginStyles.linkBoldStyle,
                                 ),
                               ),
