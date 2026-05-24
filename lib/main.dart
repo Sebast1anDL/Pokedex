@@ -5,6 +5,7 @@ import 'features/splash/splash_screen.dart';
 import 'features/auth/login_screen.dart';
 import 'features/auth/register_screen.dart';
 import 'features/home/home_screen.dart';
+import 'features/favorites/favorites_screen.dart';
 import 'features/settings/settings_screen.dart';
 
 final ValueNotifier<ThemeMode> themeModeNotifier =
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
             '/login': (context) => const LoginScreen(),
             '/register': (context) => const RegisterScreen(),
             '/home': (context) => const HomeScreen(),
+            '/favorites': (context) => const FavoritesScreen(),
             '/settings': (context) => const SettingsScreen(),
           },
         );
