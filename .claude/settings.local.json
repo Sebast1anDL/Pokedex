@@ -6,7 +6,13 @@
       "Bash(Format-Table)",
       "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\ignac\\\\OneDrive\\\\Escritorio\\\\PokeApp\\\\Pokedex\\\\lib\" -Recurse -Force | Select-Object -Property FullName | ForEach-Object { $_.FullName.Replace\\('c:\\\\Users\\\\ignac\\\\OneDrive\\\\Escritorio\\\\PokeApp\\\\Pokedex\\\\', ''\\) } | Sort-Object)",
       "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\ignac\\\\OneDrive\\\\Escritorio\\\\PokeApp\\\\Pokedex\\\\test\" -Recurse | Select-Object -ExpandProperty FullName | ForEach-Object { $_.Replace\\('c:\\\\Users\\\\ignac\\\\OneDrive\\\\Escritorio\\\\PokeApp\\\\Pokedex\\\\', ''\\) } | Sort-Object)",
-      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\ignac\\\\OneDrive\\\\Escritorio\\\\PokeApp\\\\Pokedex\\\\assets\" -Recurse | Select-Object -ExpandProperty FullName | ForEach-Object { $_.Replace\\('c:\\\\Users\\\\ignac\\\\OneDrive\\\\Escritorio\\\\PokeApp\\\\Pokedex\\\\', ''\\) } | Sort-Object)"
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\ignac\\\\OneDrive\\\\Escritorio\\\\PokeApp\\\\Pokedex\\\\assets\" -Recurse | Select-Object -ExpandProperty FullName | ForEach-Object { $_.Replace\\('c:\\\\Users\\\\ignac\\\\OneDrive\\\\Escritorio\\\\PokeApp\\\\Pokedex\\\\', ''\\) } | Sort-Object)",
+      "WebFetch(domain:www.wikidex.net)",
+      "WebFetch(domain:www.smogon.com)",
+      "Bash(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\ignac\\\\OneDrive\\\\Escritorio\\\\PokeApp\\\\Pokedex\\\\lib\\\\features\\\\detail\")",
+      "Bash(Out-Null)",
+      "Bash(Write-Output \"done\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\ignac\\\\OneDrive\\\\Escritorio\\\\PokeApp\\\\Pokedex\\\\lib\\\\features\\\\detail\")"
     ]
   }
 }

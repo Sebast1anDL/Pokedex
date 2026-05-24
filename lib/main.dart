@@ -7,6 +7,7 @@ import 'features/auth/register_screen.dart';
 import 'features/home/home_screen.dart';
 import 'features/favorites/favorites_screen.dart';
 import 'features/settings/settings_screen.dart';
+import 'features/detail/detail_screen.dart';
 
 final ValueNotifier<ThemeMode> themeModeNotifier =
     ValueNotifier(ThemeMode.dark);
@@ -57,6 +58,11 @@ class MyApp extends StatelessWidget {
             '/home': (context) => const HomeScreen(),
             '/favorites': (context) => const FavoritesScreen(),
             '/settings': (context) => const SettingsScreen(),
+            '/detail': (context) {
+              final id =
+                  ModalRoute.of(context)!.settings.arguments as int;
+              return DetailScreen(pokemonId: id);
+            },
           },
         );
       },
