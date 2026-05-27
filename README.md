@@ -39,7 +39,7 @@ Recursos estáticos
 ### `/android`
 Configuración específica para Android
 
-## 🗂️ Clases Principales
+## Clases Principales
 
 ### Modelos
 | Clase | Archivo | Descripción |
@@ -159,7 +159,7 @@ flutter pub get
 flutter pub run build_runner build
 ```
 
-## ⚡ CI/CD con Fastlane
+## CI/CD con Fastlane
 
 El proyecto usa [Fastlane](https://fastlane.tools) para automatizar el ciclo de build y pruebas.
 
@@ -187,12 +187,12 @@ fastlane ci          # Pipeline completo (ideal para entornos CI)
 
 ---
 
-## 🔒 Seguridad y Calidad
+## Seguridad y Calidad
 
 ### Análisis Estático (SAST)
 Se utilizó `flutter analyze` con un `analysis_options.yaml` personalizado que extiende `flutter_lints` con **75+ reglas** adicionales de seguridad y calidad (incluyendo `avoid_dynamic_calls`, `avoid_catches_without_on_clauses`, `unawaited_futures`, `avoid_print`, entre otras).
 
-- 📄 **Reporte completo:** [`security/sast_report.md`](security/sast_report.md)
+- **Reporte completo:** [`security/sast_report.md`](security/sast_report.md)
 
 Para ejecutar el análisis:
 ```bash
@@ -202,7 +202,7 @@ flutter analyze
 ### Verificación de Dependencias (Dependency Check)
 Se consultó la base de datos [OSV (Open Source Vulnerabilities)](https://osv.dev) de Google para los 18 paquetes del proyecto. Se encontró 1 CVE registrado (`dio` GHSA-9324-jv53-9cc8) que **no aplica** a la versión instalada (`5.4.0 ≥ 5.0.0` donde fue corregido).
 
-- 📄 **Reporte completo:** [`security/dependency_check_report.md`](security/dependency_check_report.md)
+- **Reporte completo:** [`security/dependency_check_report.md`](security/dependency_check_report.md)
 
 Para verificar dependencias desactualizadas:
 ```bash
