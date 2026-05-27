@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'app_database.dart';
+import '../security/security_helper.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -17,15 +18,16 @@ class DatabaseHelper {
 
   // ─── USUARIOS ───────────────────────────────────────────
 
-  // Crear usuario
+  // Crear usuario — la contraseña se hashea antes de persistirse
   Future<int> createUser({
     required String username,
     required String password,
   }) async {
+    final hashedPassword = SecurityHelper.hashPassword(password, username);
     return await _db.into(_db.usuarios).insert(
           UsuariosCompanion.insert(
             username: username,
-            password: password,
+            password: hashedPassword, // ← nunca texto plano
             createdAt: DateTime.now().toIso8601String(),
           ),
         );
@@ -44,15 +46,20 @@ class DatabaseHelper {
     return user != null;
   }
 
-  // Validar login
+  // Validar login — compara hash, nunca texto plano en la query
   Future<Usuario?> validateLogin({
     required String username,
     required String password,
   }) async {
-    return await (_db.select(_db.usuarios)
-          ..where(
-              (u) => u.username.equals(username) & u.password.equals(password)))
-        .getSingleOrNull();
+    final user = await getUserByUsername(username);
+    if (user == null) return null;
+
+    final valid = SecurityHelper.verifyPassword(
+      plainPassword: password,
+      storedHash: user.password,
+      username: username,
+    );
+    return valid ? user : null;
   }
 
   // ─── FAVORITOS ──────────────────────────────────────────

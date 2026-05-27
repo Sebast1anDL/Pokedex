@@ -20,6 +20,7 @@ Código fuente principal de la aplicación
 - **`core/`** - Funcionalidad central reutilizable
   - `database/` - Configuración de SQLite y manejo de base de datos
   - `services/` - Servicios principales como API REST
+  - `security/` - Utilidades de seguridad (hashing de contraseñas)
 
 - **`features/`** - Características específicas organizadas por módulo
   - `splash/` - Pantalla de inicio/carga
@@ -37,6 +38,46 @@ Recursos estáticos
 
 ### `/android`
 Configuración específica para Android
+
+## 🗂️ Clases Principales
+
+### Modelos
+| Clase | Archivo | Descripción |
+|-------|---------|-------------|
+| `PokemonListItem` | `models/pokemon.dart` | Representa un ítem de la lista (id, nombre, tipos, imagen) |
+| `PokemonDetail` | `models/pokemon_detail.dart` | Detalle completo de un Pokémon (stats, habilidades, evoluciones, etc.) |
+| `PokedexEntry` | `models/pokemon_detail.dart` | Entrada de la Pokédex de una versión específica |
+| `PokemonAbilityDetail` | `models/pokemon_detail.dart` | Habilidad con nombre, descripción y si es oculta |
+| `PokemonMoveEntry` | `models/pokemon_detail.dart` | Movimiento con método de aprendizaje y nivel |
+| `EvolutionNode` | `models/pokemon_detail.dart` | Nodo de cadena evolutiva (recursivo) |
+
+### Servicios y Helpers
+| Clase | Archivo | Descripción |
+|-------|---------|-------------|
+| `ApiService` | `core/services/api_service.dart` | Singleton que consume la PokeAPI (lista, búsqueda, filtros, detalle completo) |
+| `DatabaseHelper` | `core/database/database_helper.dart` | Singleton que expone operaciones CRUD sobre usuarios y favoritos |
+| `SharedPreferencesHelper` | `core/services/shared_preferences_helper.dart` | Persistencia de preferencias de usuario (tema, sesión) |
+| `SecurityHelper` | `core/security/security_helper.dart` | Hashing SHA-256 + salt para contraseñas |
+
+### Base de Datos (Drift/SQLite)
+| Clase | Archivo | Descripción |
+|-------|---------|-------------|
+| `AppDatabase` | `core/database/app_database.dart` | Clase principal de la base de datos Drift |
+| `Usuarios` | `core/database/app_database.dart` | Tabla de usuarios (id, username, password hasheado, createdAt) |
+| `Favoritos` | `core/database/app_database.dart` | Tabla de favoritos (userId, pokemonId, nombre, imagen) |
+
+### Pantallas principales
+| Clase | Archivo | Descripción |
+|-------|---------|-------------|
+| `SplashScreen` | `features/splash/splash_screen.dart` | Pantalla de inicio con animación y verificación de sesión |
+| `LoginScreen` | `features/auth/login_screen.dart` | Autenticación de usuario existente |
+| `RegisterScreen` | `features/auth/register_screen.dart` | Registro de nuevo usuario |
+| `HomeScreen` | `features/home/home_screen.dart` | Listado paginado de Pokémon con búsqueda y filtros |
+| `DetailScreen` | `features/detail/detail_screen.dart` | Detalle completo con stats, habilidades, movimientos y evoluciones |
+| `FavoritesScreen` | `features/favorites/favorites_screen.dart` | Lista de Pokémon marcados como favoritos |
+| `SettingsScreen` | `features/settings/settings_screen.dart` | Configuración de tema (claro/oscuro) y cierre de sesión |
+
+---
 
 ## Requisitos Previos
 
@@ -118,9 +159,64 @@ flutter pub get
 flutter pub run build_runner build
 ```
 
+## ⚡ CI/CD con Fastlane
+
+El proyecto usa [Fastlane](https://fastlane.tools) para automatizar el ciclo de build y pruebas.
+
+### Instalación (primera vez)
+```bash
+gem install fastlane
+```
+
+### Lanes disponibles
+
+| Comando | Descripción |
+|---------|-------------|
+| `fastlane test` | Ejecuta los tests de Flutter (`flutter test`) |
+| `fastlane build` | Genera el APK debug |
+| `fastlane release` | Limpia, instala deps y genera APK release optimizado |
+| `fastlane ci` | Pipeline completo: analyze → test → build release |
+
+### Uso
+```bash
+# Desde la raíz del proyecto
+fastlane build       # APK debug → build/app/outputs/flutter-apk/app-debug.apk
+fastlane release     # APK release → build/app/outputs/flutter-apk/app-release.apk
+fastlane ci          # Pipeline completo (ideal para entornos CI)
+```
+
+---
+
+## 🔒 Seguridad y Calidad
+
+### Análisis Estático (SAST)
+Se utilizó `flutter analyze` con un `analysis_options.yaml` personalizado que extiende `flutter_lints` con **75+ reglas** adicionales de seguridad y calidad (incluyendo `avoid_dynamic_calls`, `avoid_catches_without_on_clauses`, `unawaited_futures`, `avoid_print`, entre otras).
+
+- 📄 **Reporte completo:** [`security/sast_report.md`](security/sast_report.md)
+
+Para ejecutar el análisis:
+```bash
+flutter analyze
+```
+
+### Verificación de Dependencias (Dependency Check)
+Se consultó la base de datos [OSV (Open Source Vulnerabilities)](https://osv.dev) de Google para los 18 paquetes del proyecto. Se encontró 1 CVE registrado (`dio` GHSA-9324-jv53-9cc8) que **no aplica** a la versión instalada (`5.4.0 ≥ 5.0.0` donde fue corregido).
+
+- 📄 **Reporte completo:** [`security/dependency_check_report.md`](security/dependency_check_report.md)
+
+Para verificar dependencias desactualizadas:
+```bash
+dart pub outdated
+```
+
+### Contraseñas
+Las contraseñas de usuarios se almacenan con **hashing SHA-256 + salt compuesto** (nunca en texto plano). Ver `lib/core/security/security_helper.dart`.
+
+---
+
 ## Puntos a tener en cuenta
 
 - La app requiere conexión a internet para cargar la lista de Pokémon
-- Los datos de favoritos se guardan localmente en el dispositivo(sqlite)
+- Los datos de favoritos se guardan localmente en el dispositivo (SQLite)
 
-Esto se desarrollo con FLUTTER.
+Esto se desarrolló con Flutter.

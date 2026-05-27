@@ -1,0 +1,4 @@
+# fastlane/Appfile
+# Configuración de la aplicación para Fastlane
+
+package_name("com.dilor.pokedex_app")
