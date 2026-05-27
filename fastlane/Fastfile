@@ -19,7 +19,7 @@ platform :android do
   desc "Genera el APK debug"
   lane :build do
     sh("flutter build apk --debug")
-    UI.success("✅ APK generado en build/app/outputs/flutter-apk/app-debug.apk")
+    UI.success(" APK generado en build/app/outputs/flutter-apk/app-debug.apk")
   end
 
   # ── Lane: release ─────────────────────────────────────────────────────────
@@ -30,7 +30,7 @@ platform :android do
     sh("flutter clean")
     sh("flutter pub get")
     sh("flutter build apk --release")
-    UI.success("✅ APK release generado en build/app/outputs/flutter-apk/app-release.apk")
+    UI.success(" APK release generado en build/app/outputs/flutter-apk/app-release.apk")
   end
 
   # ── Lane: ci ──────────────────────────────────────────────────────────────
@@ -38,18 +38,18 @@ platform :android do
   # Uso: fastlane ci
   desc "Pipeline CI: tests + build release"
   lane :ci do
-    UI.message("🔍 Ejecutando análisis estático...")
+    UI.message(" Ejecutando análisis estático...")
     sh("flutter analyze")
 
-    UI.message("🧪 Ejecutando tests...")
+    UI.message(" Ejecutando tests...")
     sh("flutter test")
 
-    UI.message("🏗️  Generando APK release...")
+    UI.message("  Generando APK release...")
     sh("flutter clean")
     sh("flutter pub get")
     sh("flutter build apk --release")
 
-    UI.success("✅ Pipeline CI completado exitosamente")
+    UI.success(" Pipeline CI completado exitosamente")
   end
 
 end
